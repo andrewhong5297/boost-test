@@ -43,6 +43,7 @@ const main = async () => {
   const feeAmount = (rewardAmount * BigInt(10)) / BigInt(100); // 10% fee
   const rewardAmountWithFee = rewardAmount + feeAmount;
 
+  console.log("Approving reward...");
   const approvalHash = await walletClient.writeContract({
     address: rewardAddress,
     abi: erc20Abi,
@@ -57,7 +58,9 @@ const main = async () => {
   if (approvalReceipt.status === "reverted") {
     throw new Error("Approval failed");
   }
+  console.log("Approval successful");
 
+  console.log("Creating Boost...");
   // raw version returns the hash instead of the boost object
   const { hash } = await core.createBoostWithTransparentBudgetRaw(
     transparentBudget, // can use the transparent budgetaddress here instead of the object
