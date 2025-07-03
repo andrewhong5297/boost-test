@@ -61,7 +61,6 @@ This will:
 - `src/index.ts` - Main script entry point
 - `src/config.ts` - Configuration and client setup
 - `src/utils/` - Utility functions for budget and event actions
-- `.env` - Environment variables (not committed)
 - `.env.example` - Environment template
 
 ## Scripts
@@ -90,12 +89,6 @@ This will:
 ### Getting Help
 
 If you encounter issues:
-1. Check that your private key is correctly formatted (with or without '0x' prefix)
+1. Check that your private key is correctly formatted (with '0x' prefix)
 2. Verify you have sufficient testnet tokens
 3. Ensure you're using the correct network (Base Sepolia)
-
-## Security Notes
-
-- Never use mainnet private keys or real funds
-- This is for testnet development only
-- Keep your `.env` file secure and never commit it to version control
