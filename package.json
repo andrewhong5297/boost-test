@@ -1,7 +1,7 @@
 {
   "name": "boost-test",
   "version": "1.0.0",
-  "description": "A simple TypeScript project",
+  "description": "Sandbox for Testing Boost SDK",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -19,14 +19,13 @@
   "license": "MIT",
   "devDependencies": {
     "@boostxyz/sdk": "7.5.0",
-    "@types/node": "22.5.4",
-    "prettier": "^3.2.5",
-    "tsup": "8.2.4",
+    "@types/node": "^20.10.0",
     "typescript": "^5.3.0"
   },
   "dependencies": {
     "@dotenvx/dotenvx": "1.14.0",
     "@wagmi/core": "^2.17.3",
+    "tsup": "^8.5.0",
     "viem": "^2.31.4"
   }
 }
