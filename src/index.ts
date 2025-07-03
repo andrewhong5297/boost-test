@@ -7,16 +7,16 @@ import { boostCoreAbi, StrategyType } from "@boostxyz/sdk";
 
 // Needed for validator. Use production signer for mainnet.
 const signers = {
-  production: '0xCBD0C302040bC803B4B2EDaF21Be0e49Deff5480' as const,
-  staging: '0xd63167e9db11B108940b2E8236581F961f33f396' as const,
-}
+  production: "0xCBD0C302040bC803B4B2EDaF21Be0e49Deff5480" as const,
+  staging: "0xd63167e9db11B108940b2E8236581F961f33f396" as const
+};
 
 const incentivePayload = {
   asset: "0x036cbd53842c5426634e7929541ec2318f3dcf7e" as const, // USDC (Base Sepolia)
   reward: parseUnits("0.1", 6),
   limit: 1n,
-  strategy: StrategyType.POOL,
-}
+  strategy: StrategyType.POOL
+};
 
 const main = async () => {
   const transparentBudget = await getTransparentBudget(baseSepolia.id);
@@ -27,13 +27,13 @@ const main = async () => {
   // Allowlist is open to all addresses.
   const allowList = core.SimpleDenyList({
     owner: account.address,
-    denied: [],
+    denied: []
   });
   const validator = core.LimitedSignerValidator({
     signers: [signers.staging], // use production signer for mainnet
     validatorCaller: core.assertValidAddress(), // address for BoostCore (https://github.com/boostxyz/boost-protocol/blob/c638b3f599c10e3f6cab7152849ddae612f2bd26/packages/evm/deploys/84532.json#L3)
-    maxClaimCount: 1, // allows for only 1 claim per address
-  })
+    maxClaimCount: 1 // allows for only 1 claim per address
+  });
 
   const rewardAddress = incentivePayload.asset;
   const rewardAmount = incentivePayload.reward;
@@ -45,10 +45,12 @@ const main = async () => {
     address: rewardAddress,
     abi: erc20Abi,
     functionName: "approve",
-    args: [transparentBudget.assertValidAddress(), rewardAmountWithFee],
+    args: [transparentBudget.assertValidAddress(), rewardAmountWithFee]
   });
 
-  const approvalReceipt = await baseSepoliaClient.waitForTransactionReceipt({ hash: approvalHash });
+  const approvalReceipt = await baseSepoliaClient.waitForTransactionReceipt({
+    hash: approvalHash
+  });
 
   if (approvalReceipt.status === "reverted") {
     throw new Error("Approval failed");
@@ -63,9 +65,9 @@ const main = async () => {
       incentives: [incentive],
       allowList,
       validator,
-      owner: account.address,
+      owner: account.address
     }
-  )
+  );
 
   const boostReceipt = await baseSepoliaClient.waitForTransactionReceipt({ hash });
 
@@ -73,16 +75,16 @@ const main = async () => {
     throw new Error("Boost Deployment failed");
   }
 
-  const logs = parseEventLogs({ 
-    abi: boostCoreAbi, 
-    eventName: 'BoostCreated', 
-    logs: boostReceipt.logs,
-  })
+  const logs = parseEventLogs({
+    abi: boostCoreAbi,
+    eventName: "BoostCreated",
+    logs: boostReceipt.logs
+  });
 
   const boostId = logs[0].args.boostId;
 
   console.log("Boost ID:", boostId);
   console.log(`https://sepolia.basescan.org/tx/${hash}`);
-}
+};
 
 main();
