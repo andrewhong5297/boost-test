@@ -1,6 +1,7 @@
-import { Account } from "viem";
-import { core, registry, account } from "../config";
-import { Roles, TransparentBudget } from "@boostxyz/sdk";
+import { Account, Address, erc20Abi } from "viem";
+import { core, registry, account, baseSepoliaClient, walletClient } from "../config";
+import { ManagedBudget, Roles, TransparentBudget } from "@boostxyz/sdk";
+import { writeContract } from "viem/actions";
 
 /* MANAGED BUDGET */ // Not used in this example
 export const deployManagedBudget = async () => {
@@ -38,6 +39,34 @@ export async function getOrCreateBudget(account: Account) {
 
   const newBudget = await deployManagedBudget();
   return newBudget;
+}
+
+export async function transferToBudget(
+  budget: ManagedBudget,
+  tokenAddress: Address,
+  amountWei: bigint
+) {
+  console.log(`Transferring to the budget...`);
+
+  // Transfer tokens to the budget
+  const transferHash = await writeContract(walletClient, {
+    abi: erc20Abi,
+    address: tokenAddress,
+    functionName: "transfer",
+    args: [budget.assertValidAddress(), amountWei]
+  });
+
+  const transferReceipt = await baseSepoliaClient.waitForTransactionReceipt({
+    hash: transferHash
+  });
+
+  if (transferReceipt.status === "reverted") {
+    throw new Error("Transfer failed");
+  }
+
+  console.log("Transfer Successful");
+
+  return transferReceipt;
 }
 
 /* TRANSPARENT BUDGET */
