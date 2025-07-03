@@ -5,6 +5,7 @@ import { eventActionPayload } from "./utils/eventAction";
 import { erc20Abi, parseEventLogs, parseUnits } from "viem";
 import { boostCoreAbi, StrategyType } from "@boostxyz/sdk";
 
+// Needed for validator. Use production signer for mainnet.
 const signers = {
   production: '0xCBD0C302040bC803B4B2EDaF21Be0e49Deff5480' as const,
   staging: '0xd63167e9db11B108940b2E8236581F961f33f396' as const,
@@ -22,14 +23,16 @@ const main = async () => {
 
   const action = core.EventAction(eventActionPayload);
   const incentive = core.ERC20Incentive(incentivePayload);
+
+  // Allowlist is open to all addresses.
   const allowList = core.SimpleDenyList({
     owner: account.address,
     denied: [],
   });
   const validator = core.LimitedSignerValidator({
     signers: [signers.staging], // use production signer for mainnet
-    validatorCaller: core.assertValidAddress(),
-    maxClaimCount: 1,
+    validatorCaller: core.assertValidAddress(), // address for BoostCore (https://github.com/boostxyz/boost-protocol/blob/c638b3f599c10e3f6cab7152849ddae612f2bd26/packages/evm/deploys/84532.json#L3)
+    maxClaimCount: 1, // allows for only 1 claim per address
   })
 
   const rewardAddress = incentivePayload.asset;
@@ -53,7 +56,7 @@ const main = async () => {
 
   // raw version returns the hash instead of the boost object
   const { hash } = await core.createBoostWithTransparentBudgetRaw(
-    transparentBudget,
+    transparentBudget, // can use the transparent budgetaddress here instead of the object
     [{ amount: rewardAmountWithFee, asset: rewardAddress, target: account.address }],
     {
       action,

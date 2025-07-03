@@ -2,6 +2,7 @@ import { Account } from "viem";
 import { core, registry, account } from "../config";
 import { Roles, TransparentBudget } from "@boostxyz/sdk";
 
+/* MANAGED BUDGET */ // Not used in this example
 export const deployManagedBudget = async () => {
   // initialize a new budget contract
   const budget = await registry.initialize(
@@ -39,10 +40,12 @@ export async function getOrCreateBudget(account: Account) {
   return newBudget;
 }
 
+/* TRANSPARENT BUDGET */
 export async function getTransparentBudget(chainId: number) {
+    // use the base address for the transparent budget
     const transparentBudgetAddress = TransparentBudget.bases[chainId];
     if (!transparentBudgetAddress) {
       throw new Error(`Transparent budget not found for chainId: ${chainId}`);
     }
-    return core.TransparentBudget(transparentBudgetAddress); 
+    return core.TransparentBudget(transparentBudgetAddress);
 }
