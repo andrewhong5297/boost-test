@@ -19,7 +19,7 @@ const donationActionStep: ActionStep = {
     filterType: FilterType.EQUAL,
     fieldType: PrimitiveType.UINT,
     fieldIndex: 0, // crowdfund id
-    filterData: '0x0793',
+    filterData: '0x0793', // needs to be in bytes, odd number of hex digits need to be leftpadded with 0. (❌0x793 ✅0x0793)
   },
 };
 
@@ -31,7 +31,14 @@ const actionClaimant: ActionClaimant = {
   fieldIndex: 3, // donor
 };
 
+// When not using the SDK, you need to add all 4 action steps. 
+// You can simply duplicate the first step and use it for all 4.
 export const eventActionPayload = {
   actionClaimant,
-  actionSteps: [donationActionStep],
+  actionSteps: [
+    donationActionStep,
+    donationActionStep,
+    donationActionStep,
+    donationActionStep,
+  ],
 };

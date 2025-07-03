@@ -22,7 +22,10 @@ const main = async () => {
 
   const action = core.EventAction(eventActionPayload);
   const incentive = core.ERC20Incentive(incentivePayload);
-  const allowList = core.OpenAllowList();
+  const allowList = core.SimpleDenyList({
+    owner: account.address,
+    denied: [],
+  });
   const validator = core.LimitedSignerValidator({
     signers: [signers.staging], // use production signer for mainnet
     validatorCaller: core.assertValidAddress(),
@@ -56,6 +59,7 @@ const main = async () => {
       incentives: [incentive],
       allowList,
       validator,
+      owner: account.address,
     }
   )
 

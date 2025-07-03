@@ -16,7 +16,7 @@ export const deployManagedBudget = async () => {
   return budget;
 };
 
-export async function getBudget(account: Account) {
+export async function getManagedBudget(account: Account) {
   const [,identifier] = await registry.getClones(account.address);
 
   if (identifier) {
@@ -29,7 +29,7 @@ export async function getBudget(account: Account) {
 }
 
 export async function getOrCreateBudget(account: Account) {
-  const existingBudget = await getBudget(account);
+  const existingBudget = await getManagedBudget(account);
   
   if (existingBudget) {
     return existingBudget;
