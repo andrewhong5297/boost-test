@@ -6,7 +6,7 @@ import { Roles, TransparentBudget } from "@boostxyz/sdk";
 export const deployManagedBudget = async () => {
   // initialize a new budget contract
   const budget = await registry.initialize(
-    "Boost_Budget_Test",
+    `Budget_${Math.random().toString(36).substring(2, 12)}`, // unique identifier for the budget
     core.ManagedBudget({
       owner: account.address,
       authorized: [account.address, core.assertValidAddress()],
