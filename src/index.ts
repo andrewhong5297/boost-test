@@ -19,6 +19,8 @@ const incentivePayload = {
 };
 
 const main = async () => {
+  console.log("Starting Boost Deployment...");
+
   const transparentBudget = await getTransparentBudget(baseSepolia.id);
 
   const action = core.EventAction(eventActionPayload);
@@ -74,6 +76,8 @@ const main = async () => {
   if (boostReceipt.status === "reverted") {
     throw new Error("Boost Deployment failed");
   }
+
+  console.log("Boost Deployment successful");
 
   const logs = parseEventLogs({
     abi: boostCoreAbi,
