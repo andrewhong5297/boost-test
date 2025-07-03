@@ -2,8 +2,8 @@ import { baseSepolia } from "viem/chains";
 import { account, baseSepoliaClient, core, walletClient } from "./config";
 import { getTransparentBudget } from "./utils/budget";
 import { eventActionPayload } from "./utils/eventAction";
-import { erc20Abi, parseUnits } from "viem";
-import { StrategyType } from "@boostxyz/sdk";
+import { erc20Abi, parseEventLogs, parseUnits } from "viem";
+import { boostCoreAbi, StrategyType } from "@boostxyz/sdk";
 
 const signers = {
   production: '0xCBD0C302040bC803B4B2EDaF21Be0e49Deff5480' as const,
@@ -12,7 +12,7 @@ const signers = {
 
 const incentivePayload = {
   asset: "0x036cbd53842c5426634e7929541ec2318f3dcf7e" as const, // USDC (Base Sepolia)
-  reward: parseUnits("1", 6),
+  reward: parseUnits("0.1", 6),
   limit: 1n,
   strategy: StrategyType.POOL,
 }
@@ -51,7 +51,8 @@ const main = async () => {
     throw new Error("Approval failed");
   }
 
-  const boost = await core.createBoostWithTransparentBudget(
+  // raw version returns the hash instead of the boost object
+  const { hash } = await core.createBoostWithTransparentBudgetRaw(
     transparentBudget,
     [{ amount: rewardAmountWithFee, asset: rewardAddress, target: account.address }],
     {
@@ -63,7 +64,22 @@ const main = async () => {
     }
   )
 
-  console.log("Boost created:", boost.id);
+  const boostReceipt = await baseSepoliaClient.waitForTransactionReceipt({ hash });
+
+  if (boostReceipt.status === "reverted") {
+    throw new Error("Boost Deployment failed");
+  }
+
+  const logs = parseEventLogs({ 
+    abi: boostCoreAbi, 
+    eventName: 'BoostCreated', 
+    logs: boostReceipt.logs,
+  })
+
+  const boostId = logs[0].args.boostId;
+
+  console.log("Boost ID:", boostId);
+  console.log(`https://sepolia.basescan.org/tx/${hash}`);
 }
 
 main();
