@@ -15,9 +15,9 @@ import { BoostCore, BoostRegistry } from "@boostxyz/sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import assert from "assert";
 
-assert(process.env.ACCOUNT_PRIVATE_KEY, "ACCOUNT_PRIVATE_KEY is not set");
+// assert(process.env.ACCOUNT_PRIVATE_KEY, "ACCOUNT_PRIVATE_KEY is not set");
 
-export const account = privateKeyToAccount(process.env.ACCOUNT_PRIVATE_KEY as Hex);
+// export const account = privateKeyToAccount(process.env.ACCOUNT_PRIVATE_KEY as Hex);
 
 export const baseSepoliaClient = createPublicClient({
   transport: http("https://84532.rpc.thirdweb.com/"),
@@ -26,11 +26,11 @@ export const baseSepoliaClient = createPublicClient({
   .extend(publicActions)
   .extend(walletActions);
 
-export const walletClient = createWalletClient({
-  account,
-  chain: baseSepolia,
-  transport: http("https://84532.rpc.thirdweb.com/")
-});
+// export const walletClient = createWalletClient({
+//   account,
+//   chain: baseSepolia,
+//   transport: http("https://84532.rpc.thirdweb.com/")
+// });
 
 export const config = createConfig({
   chains: [baseSepolia],
@@ -39,5 +39,5 @@ export const config = createConfig({
   }
 });
 
-export const core = new BoostCore({ config, account });
-export const registry = new BoostRegistry({ config, account });
+export const core = new BoostCore({ config });
+export const registry = new BoostRegistry({ config });
