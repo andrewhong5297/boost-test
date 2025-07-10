@@ -47,7 +47,7 @@ const signers = {
 };
 
 const incentivePayload = {
-  asset: "0x036cbd53842c5426634e7929541ec2318f3dcf7e" as const, // USDC (Base Sepolia)
+  asset: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913" as const, // USDC (Base)
   reward: parseUnits("0.1", 6),
   limit: 1n,
   strategy: StrategyType.POOL
@@ -127,7 +127,7 @@ const createBoostWithTransparentBudget = async () => {
   const feeAmount = (rewardAmount * BigInt(10)) / BigInt(100); // 10% fee
   const rewardAmountWithFee = rewardAmount + feeAmount;
 
-  // console.log("Approving reward...");
+  // TODO: must add an approval step before launching the boost
   // const approvalHash = await walletClient.writeContract({
   //   address: rewardAddress,
   //   abi: erc20Abi,
@@ -142,9 +142,6 @@ const createBoostWithTransparentBudget = async () => {
   // if (approvalReceipt.status === "reverted") {
   //   throw new Error("Approval failed");
   // }
-  console.log("Approval successful");
-
-  console.log("Preparing Boost Payload...");
   
   const coreAddress = core.assertValidAddress();
   const chainId = base.id;
