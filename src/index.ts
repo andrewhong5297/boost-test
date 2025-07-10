@@ -4,6 +4,7 @@ import { getTransparentBudget } from "./utils/budget";
 import { eventActionPayload } from "./utils/eventAction";
 import { Address, parseUnits } from "viem";
 import { StrategyType } from "@boostxyz/sdk";
+import { prepareBoostPayload } from "@boostxyz/sdk";
 
 // Needed for validator. Use production signer for mainnet.
 const signers = {
@@ -88,15 +89,14 @@ const createBoostWithTransparentBudget = async () => {
 
   console.log("Final Boost Payload:", onChainPayload);
 
-  const hashedPayload = core.prepareBoostPayload(onChainPayload);
+  const hashedPayload = prepareBoostPayload(onChainPayload);
   return hashedPayload;
 };
 
-const prepareBoostPayload = async () => {
+const runPayload = async () => {
   const payload = await createBoostWithTransparentBudget();
   console.log("Prepared Boost Payload:", payload);
   return payload;
 };
 
-prepareBoostPayload();
-// createBoostWithManagedBudget();
+runPayload();
