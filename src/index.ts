@@ -21,7 +21,7 @@ import { createConfig } from "@wagmi/core";
 import { BoostCore } from "@boostxyz/sdk";
 
 export const baseClient = createPublicClient({
-  transport: http("https://base-sepolia.g.alchemy.com/v2/demo"),
+  transport: http("https://base-mainnet.g.alchemy.com/v2/demo"),
   chain: base
 })
   .extend(publicActions)
