@@ -18,6 +18,7 @@ import {
 } from "npm:@boostxyz/sdk";
 
 import { base } from "npm:viem/chains";
+import { createConfig } from "npm:@wagmi/core";
 
 // Define your input and output schemas using zod.
 const inputSchema = z.object({
@@ -39,11 +40,13 @@ async function handler(
     chain: base,
   });
 
+  const config = createConfig({
+    chains: [base],
+    client: () => client,
+  });
+
   const core = new BoostCore({
-    config: {
-      chains: [base],
-      client: () => client,
-    },
+    config,
   });
 
   const chainId = base.id;
@@ -127,7 +130,7 @@ async function handler(
     coreAddress,
     chainId,
     payload,
-    { config: { chains: [base], client: () => client } }
+    { config }
   );
 
   const boostPayload = prepareBoostPayload(onChainPayload);
